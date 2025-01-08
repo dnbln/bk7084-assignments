@@ -1,3 +1,4 @@
+import random
 from bk7084.math import *
 from components import *
 
@@ -110,5 +111,72 @@ class Office:
         max_width (float):
             The maximum width for each component.
     """
-    def __init__(self, app, num_floors, max_width):
-        pass
+    def __init__(self, app: bk.App, num_floors, max_width):
+        self.num_floors = num_floors
+        # Spawn the building and save the reference to the building
+        self.building = app.spawn_building()
+        self.building.set_visible(True)
+
+        base_floor = app.add_mesh(BasicFloor(max_width, max_width), parent=self.building)
+        base_floor.set_visible(True)
+
+        floor_height = max_width
+
+        base_floor_2 = app.add_mesh(BasicFloor(max_width, max_width), parent=self.building)
+        base_floor_2.set_transform(Mat4.from_translation(Vec3(0, max_width, 0)))
+        base_floor_2.set_visible(True)
+
+        wall1 = app.add_mesh(GlassWindowEnterance(max_width, floor_height), parent=base_floor)
+        wall1.set_transform(Mat4.from_translation(Vec3(0, floor_height / 2, max_width / 2)))
+        wall1.set_visible(True)
+
+        wall2 = app.add_mesh(GlassWindowWall(max_width, floor_height), parent=base_floor)
+        wall2.set_transform(Mat4.from_translation(Vec3(max_width / 2, floor_height / 2, 0)) * Mat4.from_rotation_y(90, True))
+        wall2.set_visible(True)
+
+        wall3 = app.add_mesh(GlassWindowWall(max_width, floor_height), parent=base_floor)
+        wall3.set_transform(Mat4.from_translation(Vec3(0, floor_height / 2, -max_width / 2)) * Mat4.from_rotation_y(180, True))
+        wall3.set_visible(True)
+
+        wall4 = app.add_mesh(GlassWindowWall(max_width, floor_height), parent=base_floor)
+        wall4.set_transform(Mat4.from_translation(Vec3(-max_width / 2, floor_height / 2, 0)) * Mat4.from_rotation_y(-90, True))
+        wall4.set_visible(True)
+
+        last_anchor = base_floor_2
+
+        for i in range(1, self.num_floors):
+            # To place each floor higher than the previous one, we parent all
+            # components to one 'base' component (floor1, see below). Then we
+            # only have to move the base component up higher and the framework
+            # takes care of the rest.
+            floor1 = app.add_mesh(BasicFloor(max_width, max_width), parent=last_anchor)
+            # Place the base component higher each time (i)
+            scale = random.normalvariate(0.93, 0.03)
+            floor1.set_transform(
+                # Mat4.from_rotation_y(random.uniform(0, 70)) *
+                Mat4.from_scale(Vec3(scale, scale, scale)))
+            floor1.set_visible(True)
+
+            floor_height = max_width
+
+            floor2 = app.add_mesh(BasicFloor(max_width, floor_height), parent=floor1)
+            floor2.set_transform(Mat4.from_translation(Vec3(0, floor_height, 0)))
+            floor2.set_visible(True)
+
+            last_anchor = floor2
+
+            wall1 = app.add_mesh(GlassWindowWall(max_width, floor_height), parent=floor1)
+            wall1.set_transform(Mat4.from_translation(Vec3(0, floor_height / 2, max_width / 2)))
+            wall1.set_visible(True)
+
+            wall2 = app.add_mesh(GlassWindowWall(max_width, floor_height), parent=floor1)
+            wall2.set_transform(Mat4.from_translation(Vec3(max_width / 2, floor_height / 2, 0)) * Mat4.from_rotation_y(90, True))
+            wall2.set_visible(True)
+
+            wall3 = app.add_mesh(GlassWindowWall(max_width, floor_height), parent=floor1)
+            wall3.set_transform(Mat4.from_translation(Vec3(0, floor_height / 2, -max_width / 2)) * Mat4.from_rotation_y(180, True))
+            wall3.set_visible(True)
+
+            wall4 = app.add_mesh(GlassWindowWall(max_width, floor_height), parent=floor1)
+            wall4.set_transform(Mat4.from_translation(Vec3(-max_width / 2, floor_height / 2, 0)) * Mat4.from_rotation_y(-90, True))
+            wall4.set_visible(True)

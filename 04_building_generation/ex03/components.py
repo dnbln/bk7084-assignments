@@ -32,6 +32,15 @@ material_basic_ground.textures = {
     "diffuse_texture": bk.res_path("../assets/grass.jpg"),
 }
 
+material_glass_window = bk.Material()
+material_glass_window.textures = {
+    "diffuse_texture": bk.res_path("../assets/window_wall.jpg"),
+}
+
+material_glass_window_entrance = bk.Material()
+material_glass_window_entrance.textures = {
+    "diffuse_texture": bk.res_path("../assets/base_window_entrance.jpg"),
+}
 
 class BasicWall(bk.Mesh):
     """
@@ -113,3 +122,41 @@ class BasicWindowWall(bk.Mesh):
             bk.SubMesh(0, 8, 0),
             bk.SubMesh(8, 10, 1),
         ]
+
+class GlassWindowWall(bk.Mesh):
+    def __new__(cls, *args, **kwargs):
+        return super().__new__(cls)
+    
+    def __init__(self, w=1, h=1, m=material_glass_window):
+        super().__init__()
+        self.w = w
+        self.h = h
+        self.name = "GlassWindowWallMesh"
+        self.positions = [
+            [-w / 2, -h / 2, 0],
+            [w / 2, -h / 2, 0],
+            [w / 2, h / 2, 0],
+            [-w / 2, h / 2, 0],
+        ]
+        self.texcoords = [[0, 0], [1, 0], [1, 1], [0, 1]]
+        self.triangles = [[0, 1, 2], [0, 2, 3]]
+        self.materials = [m]
+    
+class GlassWindowEnterance(bk.Mesh):
+    def __new__(cls, *args, **kwargs):
+        return super().__new__(cls)
+    
+    def __init__(self, w=1, h=1, m=material_glass_window_entrance):
+        super().__init__()
+        self.w = w
+        self.h = h
+        self.name = "GlassWindowEnteranceMesh"
+        self.positions = [
+            [-w / 2, -h / 2, 0],
+            [w / 2, -h / 2, 0],
+            [w / 2, h / 2, 0],
+            [-w / 2, h / 2, 0],
+        ]
+        self.texcoords = [[0, 0], [1, 0], [1, 1], [0, 1]]
+        self.triangles = [[0, 1, 2], [0, 2, 3]]
+        self.materials = [m]
