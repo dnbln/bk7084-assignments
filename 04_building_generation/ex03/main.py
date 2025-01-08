@@ -77,14 +77,20 @@ camera.set_as_main_camera()
 
 app.add_directional_light(Vec3(-1, -1, -1), bk.Color(0.8, 0.8, 0.8))
 
-skyscraper = Skyscraper(app, 5, 3)
-skyscraper.building.set_transform(Mat4.identity())
+# skyscraper = Skyscraper(app, 5, 3)
+# skyscraper.building.set_transform(Mat4.identity())
 
-highrise = Skyscraper(app, 1, 3)
+highrise = MySkyscraper(app, 100, 3)
 highrise.building.set_transform(Mat4.from_translation(Vec3(-6, 0, 0)))
 
-office = Office(app, 10, 3)
-office.building.set_transform(Mat4.from_translation(Vec3(6, 0, 0)))
+# office = Office(app, 10, 3)
+# office.building.set_transform(Mat4.from_translation(Vec3(6, 0, 0)))
+
+# office = Office(app, 10, 3)
+# office.building.set_transform(Mat4.from_translation(Vec3(12, 0, 0)))
+
+# office = Office(app, 10, 3)
+# office.building.set_transform(Mat4.from_translation(Vec3(18, 0, 0)))
 
 ground_mesh = bk.Mesh.create_quad(48, bk.Alignment.XY)
 ground_mesh.set_material(material_basic_ground)
