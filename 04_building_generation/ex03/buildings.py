@@ -82,7 +82,7 @@ class Skyscraper:
             wall4.set_transform(Mat4.from_translation(Vec3(-max_width / 2, max_width / 2, 0)) * Mat4.from_rotation_y(-90, True))
             wall4.set_visible(True)
 
-class MySkyscraper:
+class MySkyscraperRandom:
     def __init__(self, app, num_floors, max_width):
         self.num_floors = num_floors
         self.building = app.spawn_building()
@@ -90,7 +90,7 @@ class MySkyscraper:
         last_anchor = self.building
         for i in range(self.num_floors):
             floor1 = app.add_mesh(SkyscraperFloor(max_width, max_width), parent=last_anchor)
-            scale = random.uniform(0.97, 0.999)
+            scale = random.normalvariate(0.93, 0.03)
             floor1.set_transform(Mat4.from_scale(Vec3(scale, scale, scale)) * Mat4.from_translation(Vec3(1, 0, 1)))
             floor1.set_visible(True)
             floor2 = app.add_mesh(SkyscraperFloor(max_width, max_width), parent=floor1)
@@ -131,6 +131,57 @@ class MySkyscraper:
             wall8.set_transform(Mat4.from_translation(Vec3(-max_width / 2, max_width / 2, 0)) * Mat4.from_rotation_y(-90, True))
             wall8.set_visible(True)
 
+class MySkyscraper:
+    def __init__(self, app, num_floors, max_width):
+        self.num_floors = num_floors
+        self.building = app.spawn_building()
+        self.building.set_visible(True)
+        last_anchor = self.building
+        for i in range(self.num_floors):
+            floor1 = app.add_mesh(SkyscraperFloor(max_width, max_width), parent=last_anchor)
+            #scale = random.uniform(0.97, 0.999)
+            #floor1.set_transform(Mat4.from_scale(Vec3(scale, scale, scale)) * Mat4.from_translation(Vec3(1, 0, 1)))
+            floor1.set_transform(Mat4.from_translation(Vec3(1, 0, 1)))
+            floor1.set_visible(True)
+            floor2 = app.add_mesh(SkyscraperFloor(max_width, max_width), parent=floor1)
+            floor2.set_transform(Mat4.from_translation(Vec3(0, max_width, 0)))
+            floor2.set_visible(True)
+            last_anchor = floor2
+            wall1 = app.add_mesh(SkyscraperWall(max_width, max_width), parent=floor1)
+            wall1.set_transform(Mat4.from_translation(Vec3(0, max_width / 2, max_width / 2)))
+            wall1.set_visible(True)
+            wall2 = app.add_mesh(SkyscraperWall(max_width, max_width), parent=floor1)
+            wall2.set_transform(Mat4.from_translation(Vec3(max_width / 2, max_width / 2, 0)) * Mat4.from_rotation_y(90, True))
+            wall2.set_visible(True)
+            wall3 = app.add_mesh(SkyscraperWall(max_width, max_width), parent=floor1)
+            wall3.set_transform(Mat4.from_translation(Vec3(0, max_width / 2, -max_width / 2)) * Mat4.from_rotation_y(180, True))
+            wall3.set_visible(True)
+            wall4 = app.add_mesh(SkyscraperWall(max_width, max_width), parent=floor1)
+            wall4.set_transform(Mat4.from_translation(Vec3(-max_width / 2, max_width / 2, 0)) * Mat4.from_rotation_y(-90, True))
+            wall4.set_visible(True)
+            
+            floor3 = app.add_mesh(SkyscraperFloor(max_width, max_width), parent=last_anchor)
+            #floor3.set_transform(Mat4.from_scale(Vec3(scale, scale, scale)) * Mat4.from_translation(Vec3(-1, 0, -1)))
+            floor3.set_transform(Mat4.from_translation(Vec3(-1, 0, -1)))
+            floor3.set_visible(True)
+            floor4 = app.add_mesh(SkyscraperFloor(max_width, max_width), parent=floor3)
+            floor4.set_transform(Mat4.from_translation(Vec3(0, max_width, 0)))
+            floor4.set_visible(True)
+
+            last_anchor = floor4
+            wall5 = app.add_mesh(SkyscraperWall(max_width, max_width), parent=floor3)
+            wall5.set_transform(Mat4.from_translation(Vec3(0, max_width / 2, max_width / 2)))
+            wall5.set_visible(True)
+            wall6 = app.add_mesh(SkyscraperWall(max_width, max_width), parent=floor3)
+            wall6.set_transform(Mat4.from_translation(Vec3(max_width / 2, max_width / 2, 0)) * Mat4.from_rotation_y(90, True))
+            wall6.set_visible(True)
+            wall7 = app.add_mesh(SkyscraperWall(max_width, max_width), parent=floor3)
+            wall7.set_transform(Mat4.from_translation(Vec3(0, max_width / 2, -max_width / 2)) * Mat4.from_rotation_y(180, True))
+            wall7.set_visible(True)
+            wall8 = app.add_mesh(SkyscraperWall(max_width, max_width), parent=floor3)
+            wall8.set_transform(Mat4.from_translation(Vec3(-max_width / 2, max_width / 2, 0)) * Mat4.from_rotation_y(-90, True))
+            wall8.set_visible(True)         
+
 class MySkyscraperGroundFloor:
     def __init__(self, app, num_floors, max_width):
         self.num_floors = num_floors
@@ -155,37 +206,6 @@ class MySkyscraperGroundFloor:
             groundwall4 = app.add_mesh(SkyscraperDoor(max_width, max_width), parent=groundfloor1)
             groundwall4.set_transform(Mat4.from_translation(Vec3(-max_width / 2, max_width / 2, 0)) * Mat4.from_rotation_y(-90, True))
             groundwall4.set_visible(True)
-
-class MySkyscraperHexagon:
-    def __init__(self, app, num_floors, max_width):
-        self.num_floors = num_floors
-        self.building = app.spawn_building()
-        self.building.set_visible(True)
-        for i in range(self.num_floors):
-            floor1 = app.add_mesh(RoundTileFloor(max_width, max_width), parent=self.building)
-            floor1.set_transform(Mat4.from_translation(Vec3(0, max_width * i, 0)))
-            floor1.set_visible(True)
-            floor2 = app.add_mesh(RoundTileFloor(max_width, max_width), parent=floor1)
-            floor2.set_transform(Mat4.from_translation(Vec3(0, max_width, 0)))
-            floor2.set_visible(True)
-            wall1 = app.add_mesh(BasicWall(max_width, max_width), parent=floor1)
-            wall1.set_transform(Mat4.from_translation(Vec3(0, max_width / 2, max_width / 2)))
-            wall1.set_visible(True)
-            wall2 = app.add_mesh(BasicWall(max_width, max_width), parent=floor1)
-            wall2.set_transform(Mat4.from_translation(Vec3(max_width / 2, max_width / 2, 0)) * Mat4.from_rotation_y(60, True))
-            wall2.set_visible(True)
-            wall3 = app.add_mesh(BasicWall(max_width, max_width), parent=floor1)
-            wall3.set_transform(Mat4.from_translation(Vec3(0, max_width / 2, -max_width / 2)) * Mat4.from_rotation_y(120, True))
-            wall3.set_visible(True)
-            wall4 = app.add_mesh(BasicWall(max_width, max_width), parent=floor1)
-            wall4.set_transform(Mat4.from_translation(Vec3(-max_width / 2, max_width / 2, 0)) * Mat4.from_rotation_y(180, True))
-            wall4.set_visible(True)
-            wall5 = app.add_mesh(BasicWall(max_width, max_width), parent=floor1)
-            wall5.set_transform(Mat4.from_translation(Vec3(0, max_width / 2, -max_width / 2)) * Mat4.from_rotation_y(240, True))
-            wall5.set_visible(True)
-            wall6 = app.add_mesh(BasicWall(max_width, max_width), parent=floor1)
-            wall6.set_transform(Mat4.from_translation(Vec3(-max_width / 2, max_width / 2, 0)) * Mat4.from_rotation_y(300, True))
-            wall6.set_visible(True)
 
 
 class Highrise:
