@@ -158,7 +158,26 @@ class Optimizer:
                         
                         # Score based on distance to nearest park
                         score_value += 1 / (nearest_park_distance + 1)
-            
+
+            # Distance from houses to houses should be as small as possible.
+            score_value = 0
+            for row in range(city.rows):
+                for col in range(city.cols):
+                    building = city.get_building_type(row, col)
+
+                    if building == BuildingType.HOUSE:
+                        # Find the nearest house
+                        nearest_house_distance = float('inf')
+                        for r in range(city.rows):
+                            for c in range(city.cols):
+                                if city.get_building_type(r, c) == BuildingType.HOUSE:
+                                    distance = abs(row - r) + abs(col - c)
+                                    nearest_house_distance = min(nearest_house_distance, distance)
+                        
+                        # Score based on distance to nearest park
+                        score_value += 1 / (nearest_house_distance + 1)
+
+
             # Distance from houses to nearest highrise and skyscaraper should be as large as possible.
             for row in range(city.rows):
                 for col in range(city.cols):
