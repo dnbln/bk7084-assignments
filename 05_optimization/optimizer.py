@@ -124,6 +124,22 @@ class Optimizer:
                                 if b2 == BuildingType.HIGHRISE or b2 == BuildingType.SKYSCRAPER:
                                     return -1
 
+          #  No two parks can be next to each other (1 plot in between diagonally, horizontally and vertically).  
+            for row in range(city.rows):
+                for col in range(city.cols):
+                    building = city.get_building_type(row, col)
+                    if building == BuildingType.PARK:
+                        # Check adjacent buildings
+                        for dr in [-1, 0, 1]:
+                            for dc in [-1, 0, 1]:
+                                if dr == 0 and dc == 0:
+                                    continue
+                                if row + dr < 0 or row + dr >= city.rows or col + dc < 0 or col + dc >= city.cols:
+                                    continue
+
+                                b2 = city.get_building_type(row + dr, col + dc)
+                                if b2 == BuildingType.PARK:
+                                    return -1 
 
             # distance from houses to nearest park
             score_value = 0
