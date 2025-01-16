@@ -1,6 +1,9 @@
 from random import randint
 from city import BuildingType
 
+from utils import Queue
+
+
 
 class Optimizer:
     def __init__(self, city):
@@ -125,21 +128,21 @@ class Optimizer:
                                     return -1
 
           #  No two parks can be next to each other (1 plot in between diagonally, horizontally and vertically).  
-            for row in range(city.rows):
-                for col in range(city.cols):
-                    building = city.get_building_type(row, col)
-                    if building == BuildingType.PARK:
-                        # Check adjacent buildings
-                        for dr in [-1, 0, 1]:
-                            for dc in [-1, 0, 1]:
-                                if dr == 0 and dc == 0:
-                                    continue
-                                if row + dr < 0 or row + dr >= city.rows or col + dc < 0 or col + dc >= city.cols:
-                                    continue
+            # for row in range(city.rows):
+            #     for col in range(city.cols):
+            #         building = city.get_building_type(row, col)
+            #         if building == BuildingType.PARK:
+            #             # Check adjacent buildings
+            #             for dr in [-1, 0, 1]:
+            #                 for dc in [-1, 0, 1]:
+            #                     if dr == 0 and dc == 0:
+            #                         continue
+            #                     if row + dr < 0 or row + dr >= city.rows or col + dc < 0 or col + dc >= city.cols:
+            #                         continue
 
-                                b2 = city.get_building_type(row + dr, col + dc)
-                                if b2 == BuildingType.PARK:
-                                    return -1 
+            #                     b2 = city.get_building_type(row + dr, col + dc)
+            #                     if b2 == BuildingType.PARK:
+            #                         return -1 
 
             # distance from houses to nearest park
             score_value = 0
@@ -150,12 +153,36 @@ class Optimizer:
                     if building == BuildingType.HOUSE:
                         # Find the nearest park
                         nearest_park_distance = float('inf')
-                        for r in range(city.rows):
-                            for c in range(city.cols):
-                                if city.get_building_type(r, c) == BuildingType.PARK:
-                                    distance = abs(row - r) + abs(col - c)
-                                    nearest_park_distance = min(nearest_park_distance, distance)
-                        
+
+                        q = Queue(1024)
+                        q.enqueue((row, col, 0))
+                        vis = [False] * (city.rows * city.cols)
+                        vis[row * city.cols + col] = True
+
+                        while not q.is_empty():
+                            r, c, d = q.dequeue()
+
+                            if r < 0 or r >= city.rows or c < 0 or c >= city.cols:
+                                continue
+
+                            if vis[r * city.cols + c]:
+                                continue
+
+                            vis[r * city.cols + c] = True
+
+                            if city.get_building_type(r, c) == BuildingType.PARK:
+                                nearest_park_distance = d
+                                break
+
+                            if r + 1 < city.rows and not vis[(r + 1) * city.cols + c]:
+                                q.enqueue((r + 1, c, d + 1))
+                            if r - 1 >= 0 and not vis[(r - 1) * city.cols + c]:
+                                q.enqueue((r - 1, c, d + 1))
+                            if c + 1 < city.cols and not vis[r * city.cols + c + 1]:
+                                q.enqueue((r, c + 1, d + 1))
+                            if c - 1 >= 0 and not vis[r * city.cols + c - 1]:
+                                q.enqueue((r, c - 1, d + 1))
+
                         # Score based on distance to nearest park
                         score_value += 1 / (nearest_park_distance + 1)
 
@@ -168,11 +195,38 @@ class Optimizer:
                     if building == BuildingType.HOUSE:
                         # Find the nearest house
                         nearest_house_distance = float('inf')
-                        for r in range(city.rows):
-                            for c in range(city.cols):
-                                if city.get_building_type(r, c) == BuildingType.HOUSE:
-                                    distance = abs(row - r) + abs(col - c)
-                                    nearest_house_distance = min(nearest_house_distance, distance)
+                        q = Queue(1024)
+                        q.enqueue((row-1, col, 1))
+                        q.enqueue((row+1, col, 1))
+                        q.enqueue((row, col-1, 1))
+                        q.enqueue((row, col+1, 1))
+
+                        vis = [False] * (city.rows * city.cols)
+                        vis[row * city.cols + col] = True
+
+                        while not q.is_empty():
+                            r, c, d = q.dequeue()
+
+                            if r < 0 or r >= city.rows or c < 0 or c >= city.cols:
+                                continue
+                            
+                            if vis[r * city.cols + c]:
+                                continue
+
+                            vis[r * city.cols + c] = True
+
+                            if city.get_building_type(r, c) == BuildingType.HOUSE:
+                                nearest_house_distance = d
+                                break
+
+                            if r + 1 < city.rows and not vis[(r + 1) * city.cols + c]:
+                                q.enqueue((r + 1, c, d + 1))
+                            if r - 1 >= 0 and not vis[(r - 1) * city.cols + c]:
+                                q.enqueue((r - 1, c, d + 1))
+                            if c + 1 < city.cols and not vis[r * city.cols + c + 1]:
+                                q.enqueue((r, c + 1, d + 1))
+                            if c - 1 >= 0 and not vis[r * city.cols + c - 1]:
+                                q.enqueue((r, c - 1, d + 1))
                         
                         # Score based on distance to nearest park
                         score_value += 1 / (nearest_house_distance + 1)
@@ -186,16 +240,50 @@ class Optimizer:
                     if building == BuildingType.HOUSE:
                         nearest_highrise_distance = float('inf')
 
-                        for r in range(city.rows):
-                            for c in range(city.cols):
-                                if city.get_building_type(r, c) == BuildingType.HIGHRISE or city.get_building_type(r, c) == BuildingType.SKYSCRAPER:
-                                    distance = abs(row - r) + abs(col - c)
-                                    nearest_highrise_distance = min(nearest_highrise_distance, distance)
-                        
+                        q = Queue(1024)
+                        q.enqueue((row-1, col, 1))
+                        q.enqueue((row+1, col, 1))
+                        q.enqueue((row, col-1, 1))
+                        q.enqueue((row, col+1, 1))
+
+                        vis = [False] * (city.rows * city.cols)
+                        vis[row * city.cols + col] = True
+
+                        while not q.is_empty():
+                            r, c, d = q.dequeue()
+
+                            if r < 0 or r >= city.rows or c < 0 or c >= city.cols:
+                                continue
+
+                            if vis[r * city.cols + c]:
+                                continue
+
+                            vis[r * city.cols + c] = True
+
+                            bt = city.get_building_type(r, c)
+                            if bt == BuildingType.SKYSCRAPER or bt == BuildingType.HIGHRISE:
+                                nearest_highrise_distance = d
+                                break
+
+                            if r + 1 < city.rows and not vis[(r + 1) * city.cols + c]:
+                                q.enqueue((r + 1, c, d + 1))
+                            if r - 1 >= 0 and not vis[(r - 1) * city.cols + c]:
+                                q.enqueue((r - 1, c, d + 1))
+                            if c + 1 < city.cols and not vis[r * city.cols + c + 1]:
+                                q.enqueue((r, c + 1, d + 1))
+                            if c - 1 >= 0 and not vis[r * city.cols + c - 1]:
+                                q.enqueue((r, c - 1, d + 1))
+
                         # Score based on distance to nearest park
                         score_value += nearest_highrise_distance
             
             # Distance from houses to nearest office should be as small as possible.
+
+            offices = []
+            for row in range(city.rows):
+                for col in range(city.cols):
+                    if city.get_building_type(row, col) == BuildingType.OFFICE:
+                        offices.append((row, col))
 
             for row in range(city.rows):
                 for col in range(city.cols):
@@ -204,11 +292,9 @@ class Optimizer:
                     if building == BuildingType.HOUSE:
                         nearest_office_distance = float('inf')
 
-                        for r in range(city.rows):
-                            for c in range(city.cols):
-                                if city.get_building_type(r, c) == BuildingType.OFFICE:
-                                    distance = abs(row - r) + abs(col - c)
-                                    nearest_office_distance = min(nearest_office_distance, distance)
+                        for r, c in offices:
+                            distance = abs(row - r) + abs(col - c)
+                            nearest_office_distance = min(nearest_office_distance, distance)
                         
                         # Score based on distance to nearest park
                         score_value += 1 / (nearest_office_distance + 1)
@@ -220,18 +306,10 @@ class Optimizer:
 
                     if building == BuildingType.HIGHRISE or building == BuildingType.SKYSCRAPER:
                         total_dist = 0
-                        count = 0
+                        count = len(offices)
 
-                        for r in range(city.rows):
-                            for c in range(city.cols):
-                                if city.get_building_type(r, c) == BuildingType.OFFICE:
-                                    distance = abs(row - r) + abs(col - c)
-                                    total_dist += distance
-                                    count += 1
-                        
-                        # Score based on distance to nearest park
-                        if count == 0:
-                            continue
+                        for r, c in offices:
+                            total_dist += abs(row - r) + abs(col - c)
 
                         score_value += 1 / ((total_dist / count) + 1)
             

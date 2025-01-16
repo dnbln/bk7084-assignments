@@ -10,6 +10,7 @@ import bk7084 as bk
 import types
 
 
+
 class BuildingType(Enum):
     """Enum for the type of building"""
 
@@ -107,6 +108,7 @@ class City:
         self._grid = self.create_grid(app, self.width, self.height, *self.spacing)
         app.update_shadow_map_ortho_proj(max(plots_per_col, plots_per_row) * plot_width)
         # Reset (initialize) the city grid by assigning building to each plot
+        print("resetting grid")
         self.reset_grid()
 
     @staticmethod
@@ -177,13 +179,61 @@ class City:
         - 15% of the plots should be parks
         - the remaining plots can be whatever you want
         """
+
+        total_plots = self._plots_per_col * self._plots_per_row
+        remaining_skyscrapers = int(total_plots * 0.05)
+        remaining_highrises = int(total_plots * 0.08)
+        remaining_offices = int(total_plots * 0.25)
+        remaining_houses = int(total_plots * 0.37)
+        remaining_parks = int(total_plots * 0.15)
+
         # TODO: Randomize the city grid in a smart way.
-        for row in range(self._plots_per_row):
+        for row in range(0, self._plots_per_row, 2):
+            prev_high = False
             for col in range(self._plots_per_col):
                 # Generate a random number between 0 and 5 (inclusive)
                 # and set the plot type accordingly
-                building_type = BuildingType(randint(0, 5))
-                self.construct_building(row, col, building_type)
+                if remaining_skyscrapers > 0 and not prev_high:
+                    self.construct_building(row, col, BuildingType.SKYSCRAPER)
+                    remaining_skyscrapers -= 1
+                    prev_high = True
+                    print(f"Skyscrapper at {row}, {col}")
+                elif remaining_highrises > 0 and not prev_high:
+                    self.construct_building(row, col, BuildingType.HIGHRISE)
+                    remaining_highrises -= 1
+                    prev_high = True
+                    print(f"Highrise at {row}, {col}")
+                elif remaining_houses > 0:
+                    self.construct_building(row, col, BuildingType.HOUSE)
+                    remaining_houses -= 1
+                    prev_high = False
+                elif remaining_offices > 0:
+                    self.construct_building(row, col, BuildingType.OFFICE)
+                    remaining_offices -= 1
+                    prev_high = False
+                elif remaining_parks > 0:
+                    self.construct_building(row, col, BuildingType.PARK)
+                    remaining_parks -= 1
+                    prev_high = False
+                else:
+                    self.construct_building(row, col, BuildingType.EMPTY)
+                    prev_high = False
+        for row in range(1, self._plots_per_row, 2):
+            for col in range(self._plots_per_col):
+                # Generate a random number between 0 and 5 (inclusive)
+                # and set the plot type accordingly
+                if remaining_houses > 0:
+                    self.construct_building(row, col, BuildingType.HOUSE)
+                    remaining_houses -= 1
+                elif remaining_offices > 0:
+                    self.construct_building(row, col, BuildingType.OFFICE)
+                    remaining_offices -= 1
+                elif remaining_parks > 0:
+                    self.construct_building(row, col, BuildingType.PARK)
+                    remaining_parks -= 1
+                else:
+                    self.construct_building(row, col, BuildingType.EMPTY)
+
 
     def clear_grid(self):
         """Clears the city grid.
