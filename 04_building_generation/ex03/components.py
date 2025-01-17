@@ -42,29 +42,22 @@ material_glass_window_entrance.textures = {
     "diffuse_texture": bk.res_path("../assets/base_window_entrance.jpg"),
 }
 
-material_concrete_ground = bk.Material()
-material_concrete_ground.textures = {
-    # "diffuse_texture": bk.res_path("../assets/concrete.jpg"),
-}                                   
 
-material_round_tile = bk.Material()
-material_round_tile.textures = {
-    # "diffuse_texture": bk.res_path("../assets/medallion-round.jpg"),
-}
+
+
+material_dark = bk.Material()
+material_dark.textures = {
+    "diffuse_texture": bk.res_path("../assets/dark.jpg"),
+}    
+
+material_darker = bk.Material()
+material_darker.textures = {
+    "diffuse_texture": bk.res_path("../assets/darker.jpg"),
+}    
 
 material_skyscraper_wall = bk.Material()
 material_skyscraper_wall.textures = {
-    # "diffuse_texture": bk.res_path("../assets/HighRiseGlass0055_1_350.jpg"),
-}
-
-material_skyscraper_floor = bk.Material()
-material_skyscraper_floor.textures = {
-    # "diffuse_texture": bk.res_path("../assets/grass.jpg"),
-}
-
-material_skyscraper_door = bk.Material()
-material_skyscraper_door.textures = {
-    # "diffuse_texture": bk.res_path("../assets/door_skyscraper.png"),
+    "diffuse_texture": bk.res_path("../assets/HighRiseGlass0055_1_350.jpg"),
 }
 
 class SkyscraperWall(bk.Mesh):
@@ -86,12 +79,106 @@ class SkyscraperWall(bk.Mesh):
         self.triangles = [[0, 1, 2], [0, 2, 3]]
         self.materials = [m]
 
+class SkyscraperWallConcrete(bk.Mesh):
+    def __new__(cls, *args, **kwargs):
+        return super().__new__(cls)
+
+    def __init__(self, w=1, h=1, m=material_dark):
+        super().__init__()
+        self.w = w
+        self.h = h
+        self.name = "SkyscraperWallConcreteMesh"
+        self.positions = [
+            [-w / 2, -h / 2, 0],
+            [w / 2, -h / 2, 0],
+            [w / 2, h / 2, 0],
+            [-w / 2, h / 2, 0],
+        ]
+        self.texcoords = [[0, 0], [1, 0], [1, 1], [0, 1]]
+        self.triangles = [[0, 1, 2], [0, 2, 3]]
+        self.materials = [m]        
+
+class SkyscraperWallSmall(bk.Mesh):
+    def __new__(cls, *args, **kwargs):
+        return super().__new__(cls)
+
+    def __init__(self, w=1, h=1, m=material_skyscraper_wall):
+        super().__init__()
+        self.w = w
+        self.h = h
+        self.name = "SkyscraperWallSmallMesh"
+        self.positions = [
+            [-w / 2, -h / 2, 0],
+            [w / 2, -h / 2, 0],
+            [w / 2, h / 2, 0],
+            [-w / 2, h / 2, 0],
+        ]
+        self.texcoords = [[0, 0], [1, 0], [1, 1], [0, 1]]
+        self.triangles = [[0, 1, 2], [0, 2, 3]]
+        self.materials = [m]
+
+class SkyscraperWallSmallConcrete(bk.Mesh):
+    def __new__(cls, *args, **kwargs):
+        return super().__new__(cls)
+
+    def __init__(self, w=1, h=1, m=material_dark):
+        super().__init__()
+        self.w = w
+        self.h = h
+        self.name = "SkyscraperWallSmallContreteMesh"
+        self.positions = [
+            [-w / 2, -h / 2, 0],
+            [w / 2, -h / 2, 0],
+            [w / 2, h / 2, 0],
+            [-w / 2, h / 2, 0],
+        ]
+        self.texcoords = [[0, 0], [1, 0], [1, 1], [0, 1]]
+        self.triangles = [[0, 1, 2], [0, 2, 3]]
+        self.materials = [m]
+
+class SkyscraperWallWide(bk.Mesh):
+    def __new__(cls, *args, **kwargs):
+        return super().__new__(cls)
+
+    def __init__(self, w=1, h=1, m=material_skyscraper_wall):
+        super().__init__()
+        self.w = w
+        self.h = h
+        self.name = "SkyscraperWallWideMesh"
+        self.positions = [
+            [-w, -h / 2, 0],
+            [w, -h / 2, 0],
+            [w, h / 2, 0],
+            [-w, h / 2, 0],
+        ]
+        self.texcoords = [[0, 0], [2, 0], [2, 1], [0, 1]]
+        self.triangles = [[0, 1, 2], [0, 2, 3]]
+        self.materials = [m]
+
+class SkyscraperWallWideConcrete(bk.Mesh):
+    def __new__(cls, *args, **kwargs):
+        return super().__new__(cls)
+
+    def __init__(self, w=1, h=1, m=material_dark):
+        super().__init__()
+        self.w = w
+        self.h = h
+        self.name = "SkyscraperWallWideConcreteMesh"
+        self.positions = [
+            [-w, -h / 2, 0],
+            [w, -h / 2, 0],
+            [w, h / 2, 0],
+            [-w, h / 2, 0],
+        ]
+        self.texcoords = [[0, 0], [2, 0], [2, 1], [0, 1]]
+        self.triangles = [[0, 1, 2], [0, 2, 3]]
+        self.materials = [m]
 
 class SkyscraperFloor(bk.Mesh):
     def __new__(cls, *args, **kwargs):
         return super().__new__(cls)
 
-    def __init__(self, w=1, h=1, m=material_skyscraper_floor):
+    def __init__(self, w=1, h=1, m=material_darker):
         super().__init__()
         self.w = w
         self.h = h
@@ -107,47 +194,47 @@ class SkyscraperFloor(bk.Mesh):
         self.triangles = [[0, 2, 1], [0, 3, 2]]
         self.materials = [m]
 
-
-class RoundTileFloor(bk.Mesh):
+class SkyscraperFloorLeft(bk.Mesh):
     def __new__(cls, *args, **kwargs):
         return super().__new__(cls)
 
-    def __init__(self, w=4, h=4, m=material_round_tile):
+    def __init__(self, w=1, h=1, m=material_darker):
         super().__init__()
         self.w = w
         self.h = h
-        self.name = "RoundTileFloorMesh"
+        self.name = "SkyscraperFloor2Mesh"
+        # self.materials = materials
         self.positions = [
-            [w / 2, 0, 0],
-            [w / 4, h / 2, 0],
-            [-w / 4, h / 2, 0],
-            [-w / 2, 0, 0],
-            [-w / 4, -h / 2, 0],
-            [w / 4, -h / 2, 0],
+            [-w, 0, -h / 2],
+            [w, 0, -h / 2],
+            [w, 0, h / 2],
+            [-w, 0, h / 2],
         ]
-        self.texcoords = [[0, 0], [2, 0], [1, 2], [-1, 2], [-2, 0], [-1, -2], [1, -2]]
-        self.triangles = [[0, 1, 2], [0, 2, 3], [0, 3, 4], [0, 4, 5], [0, 5, 6], [0, 6, 1]]
+        self.texcoords = [[0, 0], [2, 0], [2, 1], [0, 1]]
+        self.triangles = [[0, 2, 1], [0, 3, 2]]
         self.materials = [m]
 
-
-class SkyscraperDoor(bk.Mesh):
+class SkyscraperFloorRight(bk.Mesh):
     def __new__(cls, *args, **kwargs):
         return super().__new__(cls)
 
-    def __init__(self, w=1, h=1, m=material_skyscraper_door):
+    def __init__(self, w=1, h=1, m=material_darker):
         super().__init__()
         self.w = w
         self.h = h
-        self.name = "SkyscraperDoorMesh"
+        self.name = "SkyscraperFloor3Mesh"
+        # self.materials = materials
         self.positions = [
-            [-w / 2, -h / 2, 0],
-            [w / 2, -h / 2, 0],
-            [w / 2, h / 2, 0],
-            [-w / 2, h / 2, 0],
+            [-w / 2, 0, -h],
+            [w / 2, 0, -h],
+            [w / 2, 0, h],
+            [-w / 2, 0, h],
         ]
-        self.texcoords = [[0, 0], [1, 0], [1, 1], [0, 1]]
-        self.triangles = [[0, 1, 2], [0, 2, 3]]
+        self.texcoords = [[0, 0], [1, 0], [1, 2], [0, 2]]
+        self.triangles = [[0, 2, 1], [0, 3, 2]]
         self.materials = [m]
+
+
 
 
 class BasicWall(bk.Mesh):
