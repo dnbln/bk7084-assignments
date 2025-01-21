@@ -19,8 +19,7 @@ class Optimizer:
             3. Distance from houses to nearest office should be as small as possible.
             4. Distances from highrises and skyscrappers to offices should be as small as possible.
             5. No two skyscrapers or high rises can be next to each other (1 plot in between diagonally, horizontally and vertically).
-            6. No two parks can be next to each other (1 plot in between diagonally, horizontally and vertically).
-            7. Distance from houses to houses should be as small as possible.
+            6. Distance from houses to houses should be as small as possible.
 
             Neighborhood and Zoning Rules
                 Mixed Zoning Bonus:
