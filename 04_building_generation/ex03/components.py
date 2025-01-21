@@ -326,8 +326,6 @@ class GlassWindowWall(bk.Mesh):
         super().__init__()
         self.w = w
         self.h = h
-        print("W: ", w)
-        print("H: ", h)
         self.name = "GlassWindowWallMesh"
         self.positions = [
             [-w / 2, -h / 2, 0],
@@ -359,3 +357,112 @@ class GlassWindowEnterance(bk.Mesh):
         self.materials = [m]
 
 
+# Hexagonal mesh
+class Hexall(bk.Mesh):
+    def __new__(cls, *args, **kwargs):
+        return super().__new__(cls)
+    
+    def __init__(self, m=material_glass_window):
+        super().__init__()
+        self.name = "HexallMesh"
+        p = [[0, 0, 0]]+[[np.cos(i * 2 * np.pi / 6), np.sin(i * 2 * np.pi / 6), 0] for i in range(6)]
+        self.positions = p
+        self.texcoords = [[0.5 + x / 2, 0.5 - y / 2] for [x, y, _] in p]
+        self.triangles = [[0, 1, 2], [0, 2, 3], [0, 3, 4], [0, 4, 5], [0, 5, 6], [0, 6, 1]]
+        self.materials = [m]
+
+class HexallHigher(bk.Mesh):
+    def __new__(cls, *args, **kwargs):
+        return super().__new__(cls)
+    
+    def __init__(self, m=material_glass_window):
+        super().__init__()
+        self.name = "HexallHigherMesh"
+        p = [[0, 0, 0]] + [[np.cos(i * 2 * np.pi / 6), np.sin(i * 2 * np.pi / 6), 0] for i in range(0, 4)]
+        self.positions = p
+        self.texcoords = [[0.5 + x / 2, 0.5 - y / 2] for [x, y, _] in p]
+        self.triangles = [[0, 1, 2], [0, 2, 3], [0, 3, 4]]
+        self.materials = [m]
+
+class HexallLower(bk.Mesh):
+    def __new__(cls, *args, **kwargs):
+        return super().__new__(cls)
+    
+    def __init__(self, m=material_glass_window):
+        super().__init__()
+        self.name = "HexallLowerMesh"
+        p = [[0, 0, 0]] + [[np.cos(i * 2 * np.pi / 6), np.sin(i * 2 * np.pi / 6), 0] for i in range(3, 7)]
+        self.positions = p
+        self.texcoords = [[0.5 + x / 2, 0.5 - y / 2] for [x, y, _] in p]
+        self.triangles = [[0, 1, 2], [0, 2, 3], [0, 3, 4]]
+        self.materials = [m]
+
+class HexallInside(bk.Mesh):
+    def __new__(cls, *args, **kwargs):
+        return super().__new__(cls)
+    
+    def __init__(self, m=material_glass_window):
+        super().__init__()
+        self.name = "HexallInside1Mesh"
+        p = [[np.cos(i * 2 * np.pi / 6), np.sin(i * 2 * np.pi / 6), 0] for i in range(6)] + [[np.cos(i * 2 * np.pi / 6), np.sin(i * 2 * np.pi / 6), -1] for i in range(6)]
+        self.positions = p
+        self.texcoords = [[0.5 + x / 2, 0.5 - y / 2] for [x, y, _] in p]
+        self.triangles = [[0, 6, 1], [1, 6, 7], [1, 7, 2], [2, 7, 8], [2, 8, 3], [3, 8, 9], [3, 9, 4], [4, 9, 10], [4, 10, 5], [5, 10, 11], [5, 11, 0], [0, 11, 6]]
+        self.materials = [m]
+
+class EWITopInside(bk.Mesh):
+    def __new__(cls, *args, **kwargs):
+        return super().__new__(cls)
+    
+    def __init__(self, w=1, h=1, m=material_glass_window):
+        super().__init__()
+        self.w = w
+        self.h = h
+        self.name = "EWITopInsideMesh"
+        self.positions = [
+            [-w / 2, -h / 2, 0],
+            [w / 2, -h / 2, 0],
+            [w / 2, h / 2, 0],
+            [-w / 2, h / 2, 0],
+        ]
+        self.texcoords = [[0, 0], [1, 0], [1, 1], [0, 1]]
+        self.triangles = [[0, 1, 2], [0, 2, 3]]
+        self.materials = [m]
+
+class EWITopOutside(bk.Mesh):
+    def __new__(cls, *args, **kwargs):
+        return super().__new__(cls)
+    
+    def __init__(self, w=1, h=1, m=material_glass_window):
+        super().__init__()
+        self.w = w
+        self.h = h
+        self.name = "EWITopOutsideMesh"
+        self.positions = [
+            [-w / 2, -h / 2, 0],
+            [w / 2, -h / 2, 0],
+            [w / 2, h / 2, 0],
+            [-w / 2, h / 2, 0],
+        ]
+        self.texcoords = [[0, 0], [1, 0], [1, 1], [0, 1]]
+        self.triangles = [[0, 1, 2], [0, 2, 3]]
+        self.materials = [m]
+
+class EWIRooftop(bk.Mesh):
+    def __new__(cls, *args, **kwargs):
+        return super().__new__(cls)
+    
+    def __init__(self, w=1, h=1, m=material_glass_window):
+        super().__init__()
+        self.w = w
+        self.h = h
+        self.name = "EWIRooftopMesh"
+        self.positions = [
+            [-w / 2, 0, -h / 2],
+            [w / 2, 0, -h / 2],
+            [w / 2, 0, h / 2],
+            [-w / 2, 0, h / 2],
+        ]
+        self.texcoords = [[0.1, 0.1], [0.1, 0.1], [0.1, 0.1], [0.1, 0.1]]
+        self.triangles = [[0, 2, 1], [0, 3, 2]]
+        self.materials = [m]
