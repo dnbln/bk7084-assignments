@@ -277,7 +277,8 @@ class City:
             )
         elif building_type is BuildingType.SKYSCRAPER:
             # TODO: replace the following line with your own code to create a skyscraper
-            building = Skyscraper(self._app, 8, 3)
+            building = MySkyscraper(self._app, 15, 3)
+
         elif building_type is BuildingType.PARK:
             building = Park(self._app)
 
