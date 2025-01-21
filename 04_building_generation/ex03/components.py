@@ -239,6 +239,8 @@ class GlassWindowWall(bk.Mesh):
         super().__init__()
         self.w = w
         self.h = h
+        print("W: ", w)
+        print("H: ", h)
         self.name = "GlassWindowWallMesh"
         self.positions = [
             [-w / 2, -h / 2, 0],
@@ -268,3 +270,4 @@ class GlassWindowEnterance(bk.Mesh):
         self.texcoords = [[0, 0], [1, 0], [1, 1], [0, 1]]
         self.triangles = [[0, 1, 2], [0, 2, 3]]
         self.materials = [m]
+

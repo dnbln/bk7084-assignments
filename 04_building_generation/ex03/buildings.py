@@ -278,6 +278,7 @@ class Office:
             # Place the base component higher each time (i)
             # scale = random.normalvariate(0.93, 0.03)
             scale = random.uniform(0.8, 0.98)
+            # scale = 1
             floor1.set_transform(
                 Mat4.from_rotation_y(10 * np.pi / 180) *
                 Mat4.from_scale(Vec3(scale, scale, scale)))
@@ -306,3 +307,21 @@ class Office:
             wall4 = app.add_mesh(GlassWindowWall(max_width, floor_height), parent=floor1)
             wall4.set_transform(Mat4.from_translation(Vec3(-max_width / 2, floor_height / 2, 0)) * Mat4.from_rotation_y(-90, True))
             wall4.set_visible(True)
+        
+        last_floor_base = last_anchor
+
+        # wall1 = app.add_mesh(GlassWindowWall(max_width / 10, max_width / 5), parent=last_floor_base)
+        # wall1.set_transform(Mat4.from_translation(Vec3(0, floor_height / 10, max_width / 2)))
+        # wall1.set_visible(True)
+
+        # wall2 = app.add_mesh(GlassWindowWall(max_width / 5, max_width / 10), parent=last_floor_base)
+        # wall2.set_transform(Mat4.from_translation(Vec3(max_width / 2, floor_height / 10, 0)) * Mat4.from_rotation_y(90, True))
+        # wall2.set_visible(True)
+
+        # wall3 = app.add_mesh(GlassWindowWall(max_width / 10, max_width / 5), parent=last_floor_base)
+        # wall3.set_transform(Mat4.from_translation(Vec3(0, floor_height / 10, -max_width/2)) * Mat4.from_rotation_y(180, True))
+        # wall3.set_visible(True)
+
+        # wall4 = app.add_mesh(GlassWindowWall(max_width / 5, max_width / 10), parent=last_floor_base)
+        # wall4.set_transform(Mat4.from_translation(Vec3(-max_width/2, floor_height/10, 0)) * Mat4.from_rotation_y(-90, True))
+        # wall4.set_visible(True)
