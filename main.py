@@ -77,20 +77,14 @@ camera.set_as_main_camera()
 
 app.add_directional_light(Vec3(-1, -1, -1), bk.Color(0.8, 0.8, 0.8))
 
+skyscraper = HighriseTaipei(app, 7, 4)
+skyscraper.building.set_transform(Mat4.identity())
 
-skyscraper = MySkyscraperDubai(app, 46, 6)
-skyscraper = MySkyscraper(app, 15, 3)
+#highrise = HighriseTaipei(app, 7, 3)
+#highrise.building.set_transform(Mat4.from_translation(Vec3(6, 0, 0)))
 
-
-
-# office = Office(app, 10, 3)
-# office.building.set_transform(Mat4.from_translation(Vec3(6, 0, 0)))
-
-# office = Office(app, 10, 3)
-# office.building.set_transform(Mat4.from_translation(Vec3(12, 0, 0)))
-
-office = Office(app, 10, 3)
-office.building.set_transform(Mat4.from_translation(Vec3(18, 0, 0)))
+#office = HighriseTaipei(app, 8, 3)
+#office.building.set_transform(Mat4.from_translation(Vec3(-6, 0, 0)))
 
 ground_mesh = bk.Mesh.create_quad(48, bk.Alignment.XY)
 ground_mesh.set_material(material_basic_ground)
@@ -102,7 +96,7 @@ ground.set_visible(True)
 is_key_1_pressed = False
 is_key_2_pressed = False
 
-enable_backface_culling = True
+enable_backface_culling = False
 enable_wireframe = False
 
 app.enable_backface_culling(enable_backface_culling)
