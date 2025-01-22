@@ -38,7 +38,7 @@ class BuildingType(Enum):
 
 Office.type = BuildingType.OFFICE
 EWI.type = BuildingType.OFFICE
-Highrise.type = BuildingType.HIGHRISE
+HighriseTaipei.type = BuildingType.HIGHRISE
 MySkyscraper.type = BuildingType.SKYSCRAPER
 MySkyscraperDubai.type = BuildingType.SKYSCRAPER
 House.type = BuildingType.HOUSE
