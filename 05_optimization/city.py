@@ -279,11 +279,20 @@ class City:
             )
         elif building_type is BuildingType.SKYSCRAPER:
             # TODO: replace the following line with your own code to create a skyscraper
-            skyscraper = randint(0,2)
+            skyscraper = randint(0,6)
             if skyscraper == 0:
-                building = MySkyscraper(self._app, 15, 3)
+                building = MySkyscraper(self._app, 9, 3)
             elif skyscraper == 1:
-                building = MySkyscraperDubai(self._app, 46, 6)
+                building = MySkyscraper(self._app, 10, 3)                
+            elif skyscraper == 2:
+                building = MySkyscraper(self._app, 11, 3)
+            elif skyscraper == 3:
+                building = MySkyscraperDubai(self._app, 35, 6)                
+            elif skyscraper == 4:
+                building = MySkyscraperDubai(self._app, 40, 6)
+            elif skyscraper == 5:
+                building = MySkyscraperDubai(self._app, 46, 6)                
+                
 
         elif building_type is BuildingType.PARK:
             building = Park(self._app)
