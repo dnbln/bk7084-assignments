@@ -2,7 +2,7 @@ from enum import Enum
 
 import numpy as np
 
-from buildings import Office, Highrise, MySkyscraper, MySkyscraperDubai, EWI, House, Park
+from buildings import Office, Highrise, MySkyscraper, MySkyscraperDubai, EWI, House, Park, HighriseTaipei
 from components import material_basic_ground
 from random import randint
 from bk7084.math import Mat4, Vec3
