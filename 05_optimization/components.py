@@ -78,7 +78,7 @@ material_skyscraper_floor.textures = {
 
 material_skyscraper_door = bk.Material()
 material_skyscraper_door.textures = {
-    "diffuse_texture": bk.res_path("assets/door_skyscraper.png"),
+    "diffuse_texture": bk.res_path("assets/door_skyscraper2.png"),
 }
 
 class SkyscraperWall(bk.Mesh):
