@@ -1,5 +1,5 @@
 from random import randint
-from city import BuildingType
+from city import BuildingType, City
 
 from utils import Queue
 
@@ -105,7 +105,7 @@ class Optimizer:
                 Whether to print information about the optimization step.
         """
 
-        def score(city):
+        def score(city: City):
             # No two skyscrapers or high rises can be next to each other (1 plot in between diagonally, horizontally and vertically).
             for row in range(city.rows):
                 for col in range(city.cols):
@@ -309,7 +309,7 @@ class Optimizer:
 
                         score_value += 1 / ((total_dist / count) + 1)
             
-            score_value += sum(city.compute_sunlight_scores())
+            score_value += sum(1/x for x in city.compute_sunlight_scores())
             return score_value
 
 
@@ -322,6 +322,7 @@ class Optimizer:
         row1, col1 = randint(0, self._city._plots_per_row - 1), randint(0, self._city._plots_per_col - 1)
         row2, col2 = randint(0, self._city._plots_per_row - 1), randint(0, self._city._plots_per_col - 1)
         self._city.swap_buildings(row1, col1, row2, col2)
+        accepted_swap = True
         #  Hint: You can use the function `compute_sunlight_scores` of the City class
         #  to compute the sunlight scores
         new_score = score(self._city)
@@ -330,6 +331,7 @@ class Optimizer:
             if print_info:
                 print("Reverting swap")
             self._city.swap_buildings(row1, col1, row2, col2)
+            accepted_swap = False
 
         if print_info:
             print("Previous score: ", previous_score)
@@ -337,7 +339,7 @@ class Optimizer:
             print("New city layout: ")
             self._city.print_plots()
         
-        return new_score
+        return new_score, accepted_swap
 
     def optimize(self, n_steps=100, print_info=False):
         """
@@ -356,8 +358,16 @@ class Optimizer:
         print("Initial city layout: ")
         self._city.print_plots()
         print("Optimizing...")
+
+        denied_swap_count = 0
         for i in range(n_steps):
             print(f"Step: {i}", end="\r")
-            score = self.step(print_info)
+            score, accepted_swap = self.step(print_info)
+            if not accepted_swap:
+                denied_swap_count += 1
+                if denied_swap_count > 15:
+                    break
+            else:
+                denied_swap_count = 0
             # TODO: Add a stopping criterion here.
         print(f"\nDone! Final score: {score}")
