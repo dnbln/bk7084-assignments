@@ -2,7 +2,7 @@ from enum import Enum
 
 import numpy as np
 
-from buildings import Office, Highrise, Skyscraper, House, Park
+from buildings import Office, Highrise, MySkyscraper, MySkyscraperDubai, EWI, House, Park
 from components import material_basic_ground
 from random import randint
 from bk7084.math import Mat4, Vec3
@@ -37,8 +37,10 @@ class BuildingType(Enum):
 
 
 Office.type = BuildingType.OFFICE
+EWI.type = BuildingType.OFFICE
 Highrise.type = BuildingType.HIGHRISE
-Skyscraper.type = BuildingType.SKYSCRAPER
+MySkyscraper.type = BuildingType.SKYSCRAPER
+MySkyscraperDubai.type = BuildingType.SKYSCRAPER
 House.type = BuildingType.HOUSE
 Park.type = BuildingType.PARK
 
@@ -272,12 +274,12 @@ class City:
             building = Office(self._app, num_floors, 3)
         elif building_type is BuildingType.HIGHRISE:
             # TODO: replace the following line with your own code to create a highrise
-            building = Skyscraper(
+            building = Highrise(
                 self._app, 5, 3
             )
         elif building_type is BuildingType.SKYSCRAPER:
             # TODO: replace the following line with your own code to create a skyscraper
-            skyscraper = random.randint(0,2)
+            skyscraper = randint(0,2)
             if skyscraper == 0:
                 building = MySkyscraper(self._app, 15, 3)
             elif skyscraper == 1:

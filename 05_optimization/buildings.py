@@ -384,3 +384,213 @@ class House:
             * Mat4.from_translation(Vec3(0, 6.8, 0))
             * Mat4.from_rotation_y(angle, True)
         )
+
+class EWI:
+    """An office class that procedurally generates
+    an office building given a number of floors and width.
+
+    Args:
+        app (bk.App):
+            The app instance.
+        num_floors (int):
+            Number of floors to generate.
+        max_width (float):
+            The maximum width for each component.
+    """
+    def __init__(self, app: bk.App, num_floors, max_width):
+        if num_floors % 2 == 0:
+            raise ValueError("Number of floors must be odd")
+
+        self.num_floors = num_floors
+        # Spawn the building and save the reference to the building
+        self.building = app.spawn_building()
+        self.building.set_visible(True)
+
+        p = PerlinNoise(octaves=3, seed=random.randint(0, 1000000))
+
+        base_floor = app.add_mesh(BasicFloor(max_width, max_width), parent=self.building)
+        base_floor.set_visible(True)
+
+        floor_height = max_width
+
+        base_floor_2 = app.add_mesh(BasicFloor(max_width, max_width), parent=base_floor)
+        base_floor_2.set_transform(Mat4.from_translation(Vec3(0, max_width, 0)))
+        base_floor_2.set_visible(True)
+
+        wall1 = app.add_mesh(GlassWindowEnterance(max_width, floor_height), parent=base_floor)
+        wall1.set_transform(Mat4.from_translation(Vec3(0, floor_height / 2, max_width / 2)))
+        wall1.set_visible(True)
+
+        wall2 = app.add_mesh(GlassWindowWall(max_width, floor_height), parent=base_floor)
+        wall2.set_transform(Mat4.from_translation(Vec3(max_width / 2, floor_height / 2, 0)) * Mat4.from_rotation_y(90, True))
+        wall2.set_visible(True)
+
+        wall3 = app.add_mesh(GlassWindowWall(max_width, floor_height), parent=base_floor)
+        wall3.set_transform(Mat4.from_translation(Vec3(0, floor_height / 2, -max_width / 2)) * Mat4.from_rotation_y(180, True))
+        wall3.set_visible(True)
+
+        wall4 = app.add_mesh(GlassWindowWall(max_width, floor_height), parent=base_floor)
+        wall4.set_transform(Mat4.from_translation(Vec3(-max_width / 2, floor_height / 2, 0)) * Mat4.from_rotation_y(-90, True))
+        wall4.set_visible(True)
+
+        last_anchor = base_floor_2
+
+        hexcount = 30
+        hexscale = max_width / (3 * hexcount - 1)
+        hexscalem = Mat4.from_scale(Vec3(hexscale, hexscale, hexscale))
+        d = hexscale * np.sqrt(3) / 2
+        pdc = 10
+        ewi_inside_ratio = 0.7
+        ewi_inside_height = 0.03 * max_width
+        ewi_outside_height = 0.05 * max_width
+
+        for hxi in range(hexcount-1):
+            hexall = app.add_mesh(HexallHigher(), parent=last_anchor)
+            hexall.set_transform(Mat4.from_translation(Vec3(-max_width / 2 + 2.5 * hexscale + hxi / (hexcount - 1) * (max_width - 2 * hexscale), 0, max_width / 2)) * hexscalem)
+            hexall.set_visible(True)
+        for hxi in range(hexcount-1):
+            hexall = app.add_mesh(HexallHigher(), parent=last_anchor)
+            hexall.set_transform(Mat4.from_translation(Vec3(-max_width / 2 + 2.5 * hexscale + hxi / (hexcount - 1) * (max_width - 2 * hexscale), 0, -max_width / 2)) * Mat4.from_rotation_y(180, True) * hexscalem)
+            hexall.set_visible(True)
+        for hxi in range(hexcount-1):
+            hexall = app.add_mesh(HexallHigher(), parent=last_anchor)
+            hexall.set_transform(Mat4.from_translation(Vec3(max_width / 2, 0, -max_width / 2 + 2.5 * hexscale + hxi / (hexcount - 1) * (max_width - 2 * hexscale)))* Mat4.from_rotation_y(90, True) * hexscalem)
+            hexall.set_visible(True)
+        for hxi in range(hexcount-1):
+            hexall = app.add_mesh(HexallHigher(), parent=last_anchor)
+            hexall.set_transform(Mat4.from_translation(Vec3(-max_width / 2, 0, -max_width / 2 + 2.5 * hexscale + hxi / (hexcount - 1) * (max_width - 2 * hexscale))) * Mat4.from_rotation_y(270, True) * hexscalem)
+            hexall.set_visible(True)
+
+        for i in range(self.num_floors):
+            if i % 2 == 0:
+                run_cnt = hexcount
+                sclcoef = 1
+            else:
+                run_cnt = hexcount - 1
+                sclcoef = 2.5
+
+            cy = d * i
+
+            for hxi in range(run_cnt):
+                hexall = app.add_mesh(Hexall(), parent=last_anchor)
+                cx = -max_width / 2 + sclcoef * hexscale + hxi / (hexcount - 1) * (max_width - 2 * hexscale)
+                pd = np.abs(p.noise((cx, cy, max_width / 2)))
+                hexall.set_transform(Mat4.from_translation(Vec3(cx, d, max_width / 2 - pd * max_width / pdc)) * hexscalem)
+                hexall.set_visible(True)
+
+                hexall_inside = app.add_mesh(HexallInside(), parent=hexall)
+                hexall_inside.set_transform(Mat4.from_scale(Vec3(1, 1, 3)))
+                hexall_inside.set_visible(True)
+            for hxi in range(run_cnt):
+                hexall = app.add_mesh(Hexall(), parent=last_anchor)
+                cx = -max_width / 2 + sclcoef * hexscale + hxi / (hexcount - 1) * (max_width - 2 * hexscale)
+                pd = np.abs(p.noise((cx, cy, -max_width / 2)))
+                hexall.set_transform(Mat4.from_translation(Vec3(cx, d, -max_width / 2 + pd * max_width / pdc)) * Mat4.from_rotation_y(180, True) * hexscalem)
+                hexall.set_visible(True)
+
+                hexall_inside = app.add_mesh(HexallInside(), parent=hexall)
+                hexall_inside.set_transform(Mat4.from_scale(Vec3(1, 1, 3)))
+                hexall_inside.set_visible(True)
+            for hxi in range(run_cnt):
+                hexall = app.add_mesh(Hexall(), parent=last_anchor)
+                cz = -max_width / 2 + sclcoef * hexscale + hxi / (hexcount - 1) * (max_width - 2 * hexscale)
+                pd = np.abs(p.noise((max_width / 2, cy, cz)))
+                hexall.set_transform(Mat4.from_translation(Vec3(max_width / 2 - pd * max_width / pdc, d, cz)) * Mat4.from_rotation_y(90, True) * hexscalem)
+                hexall.set_visible(True)
+
+                hexall_inside = app.add_mesh(HexallInside(), parent=hexall)
+                hexall_inside.set_transform(Mat4.from_scale(Vec3(1, 1, 3)))
+                hexall_inside.set_visible(True)
+            for hxi in range(run_cnt):
+                hexall = app.add_mesh(Hexall(), parent=last_anchor)
+                cz = -max_width / 2 + sclcoef * hexscale + hxi / (hexcount - 1) * (max_width - 2 * hexscale)
+                pd = np.abs(p.noise((-max_width / 2, cy, cz)))
+                hexall.set_transform(Mat4.from_translation(Vec3(-max_width / 2 + pd * max_width / pdc, d, cz)) * Mat4.from_rotation_y(270, True) * hexscalem)
+                hexall.set_visible(True)
+
+                hexall_inside = app.add_mesh(HexallInside(), parent=hexall)
+                hexall_inside.set_transform(Mat4.from_scale(Vec3(1, 1, 3)))
+                hexall_inside.set_visible(True)
+            floor1 = app.add_mesh(BasicFloor(max_width, max_width), parent=last_anchor)
+            floor1.set_transform(Mat4.from_translation(Vec3(0, 0, 0)))
+            # floor1.set_visible(True)
+
+            floor2 = app.add_mesh(BasicFloor(max_width, max_width), parent=floor1)
+            floor2.set_transform(Mat4.from_translation(Vec3(0, d, 0)))
+            # floor2.set_visible(True)
+
+            last_anchor = floor2
+        for hxi in range(hexcount-1):
+            hexall = app.add_mesh(HexallLower(), parent=last_anchor)
+            hexall.set_transform(Mat4.from_translation(Vec3(-max_width / 2 + 2.5 * hexscale + hxi / (hexcount - 1) * (max_width - 2 * hexscale), d, max_width / 2)) * hexscalem)
+            hexall.set_visible(True)
+        for hxi in range(hexcount-1):
+            hexall = app.add_mesh(HexallLower(), parent=last_anchor)
+            hexall.set_transform(Mat4.from_translation(Vec3(-max_width / 2 + 2.5 * hexscale + hxi / (hexcount - 1) * (max_width - 2 * hexscale), d, -max_width / 2)) * Mat4.from_rotation_y(180, True) * hexscalem)
+            hexall.set_visible(True)
+        for hxi in range(hexcount-1):
+            hexall = app.add_mesh(HexallLower(), parent=last_anchor)
+            hexall.set_transform(Mat4.from_translation(Vec3(max_width / 2, d, -max_width / 2 + 2.5 * hexscale + hxi / (hexcount - 1) * (max_width - 2 * hexscale)))* Mat4.from_rotation_y(90, True) * hexscalem)
+            hexall.set_visible(True)
+        for hxi in range(hexcount-1):
+            hexall = app.add_mesh(HexallLower(), parent=last_anchor)
+            hexall.set_transform(Mat4.from_translation(Vec3(-max_width / 2, d, -max_width / 2 + 2.5 * hexscale + hxi / (hexcount - 1) * (max_width - 2 * hexscale))) * Mat4.from_rotation_y(270, True) * hexscalem)
+            hexall.set_visible(True)
+        
+
+        floor1 = app.add_mesh(EWIRooftop(max_width, max_width), parent=last_anchor)
+        floor1.set_transform(Mat4.from_translation(Vec3(0, 0, 0)) * Mat4.from_scale(Vec3(ewi_inside_ratio, 1, ewi_inside_ratio)))
+        floor1.set_visible(True)
+
+        last_anchor = floor1
+
+        for i in range(10):
+            w1 = app.add_mesh(EWITopInside(), parent=last_anchor)
+            w1.set_transform(Mat4.from_translation(Vec3(0, ewi_inside_height / 2, max_width / 2)) * Mat4.from_scale(Vec3(max_width, ewi_inside_height, 1)))
+            w1.set_visible(True)
+
+            w2 = app.add_mesh(EWITopInside(), parent=last_anchor)
+            w2.set_transform(Mat4.from_translation(Vec3(max_width / 2, ewi_inside_height / 2, 0)) * Mat4.from_rotation_y(90, True) * Mat4.from_scale(Vec3(max_width, ewi_inside_height, 1)))
+            w2.set_visible(True)
+
+            w3 = app.add_mesh(EWITopInside(), parent=last_anchor)
+            w3.set_transform(Mat4.from_translation(Vec3(0, ewi_inside_height / 2, -max_width / 2)) * Mat4.from_rotation_y(180, True) * Mat4.from_scale(Vec3(max_width, ewi_inside_height, 1)))
+            w3.set_visible(True)
+
+            w4 = app.add_mesh(EWITopInside(), parent=last_anchor)
+            w4.set_transform(Mat4.from_translation(Vec3(-max_width / 2, ewi_inside_height / 2, 0)) * Mat4.from_rotation_y(-90, True) * Mat4.from_scale(Vec3(max_width, ewi_inside_height, 1)))
+            w4.set_visible(True)
+
+            floor2 = app.add_mesh(EWIRooftop(max_width, max_width), parent=last_anchor)
+            floor2.set_transform(Mat4.from_translation(Vec3(0, ewi_inside_height, 0)))
+            floor2.set_visible(True)
+
+            last_anchor = floor2
+        
+        floor1 = app.add_mesh(EWIRooftop(max_width, max_width), parent=last_anchor)
+        floor1.set_transform(Mat4.from_scale(Vec3(1 / ewi_inside_ratio, 1, 1 / ewi_inside_ratio)))
+        floor1.set_visible(True)
+        last_anchor = floor1
+
+        for i in range(10):
+            w1 = app.add_mesh(EWITopOutside(), parent=last_anchor)
+            w1.set_transform(Mat4.from_translation(Vec3(0, ewi_outside_height / 2, max_width / 2)) * Mat4.from_scale(Vec3(max_width, ewi_outside_height, 1)))
+            w1.set_visible(True)
+
+            w2 = app.add_mesh(EWITopOutside(), parent=last_anchor)
+            w2.set_transform(Mat4.from_translation(Vec3(max_width / 2, ewi_outside_height / 2, 0)) * Mat4.from_rotation_y(90, True) * Mat4.from_scale(Vec3(max_width, ewi_outside_height, 1)))
+            w2.set_visible(True)
+
+            w3 = app.add_mesh(EWITopOutside(), parent=last_anchor)
+            w3.set_transform(Mat4.from_translation(Vec3(0, ewi_outside_height / 2, -max_width / 2)) * Mat4.from_rotation_y(180, True) * Mat4.from_scale(Vec3(max_width, ewi_outside_height, 1)))
+            w3.set_visible(True)
+
+            w4 = app.add_mesh(EWITopOutside(), parent=last_anchor)
+            w4.set_transform(Mat4.from_translation(Vec3(-max_width / 2, ewi_outside_height / 2, 0)) * Mat4.from_rotation_y(-90, True) * Mat4.from_scale(Vec3(max_width, ewi_outside_height, 1)))
+            w4.set_visible(True)
+
+            floor3 = app.add_mesh(EWIRooftop(max_width, max_width), parent=last_anchor)
+            floor3.set_transform(Mat4.from_translation(Vec3(0, ewi_outside_height, 0)))
+            floor3.set_visible(True)
+
+            last_anchor = floor3
