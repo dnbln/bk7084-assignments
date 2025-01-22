@@ -275,7 +275,7 @@ class City:
         elif building_type is BuildingType.HIGHRISE:
             # TODO: replace the following line with your own code to create a highrise
             building = HighriseTaipei(
-                self._app, 5, 3
+                self._app, 7, 3
             )
         elif building_type is BuildingType.SKYSCRAPER:
             # TODO: replace the following line with your own code to create a skyscraper
