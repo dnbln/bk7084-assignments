@@ -3,6 +3,7 @@ import random
 from bk7084.math import *
 from components import *
 
+from perlin_noise import PerlinNoise
 
 """
 This file contains the Skyscraper, Highrise, and Office classes.
@@ -397,7 +398,7 @@ class EWI:
         max_width (float):
             The maximum width for each component.
     """
-    def __init__(self, app: bk.App, num_floors, max_width):
+    def __init__(self, app: bk.App, num_floors, max_width, hexcount = 20, pdc = 10, ewi_inside_ratio = 0.4, ewi_inside_height_coef = 0.1, ewi_outside_height_coef = 0.2, ewi_inside_roofs = 2, ewi_outside_roofs = 3):
         if num_floors % 2 == 0:
             raise ValueError("Number of floors must be odd")
 
@@ -435,14 +436,11 @@ class EWI:
 
         last_anchor = base_floor_2
 
-        hexcount = 30
         hexscale = max_width / (3 * hexcount - 1)
         hexscalem = Mat4.from_scale(Vec3(hexscale, hexscale, hexscale))
         d = hexscale * np.sqrt(3) / 2
-        pdc = 10
-        ewi_inside_ratio = 0.7
-        ewi_inside_height = 0.03 * max_width
-        ewi_outside_height = 0.05 * max_width
+        ewi_inside_height = ewi_inside_height_coef * max_width
+        ewi_outside_height = ewi_outside_height_coef * max_width
 
         for hxi in range(hexcount-1):
             hexall = app.add_mesh(HexallHigher(), parent=last_anchor)
@@ -537,20 +535,25 @@ class EWI:
             hexall.set_transform(Mat4.from_translation(Vec3(-max_width / 2, d, -max_width / 2 + 2.5 * hexscale + hxi / (hexcount - 1) * (max_width - 2 * hexscale))) * Mat4.from_rotation_y(270, True) * hexscalem)
             hexall.set_visible(True)
         
-
         floor1 = app.add_mesh(EWIRooftop(max_width, max_width), parent=last_anchor)
-        floor1.set_transform(Mat4.from_translation(Vec3(0, 0, 0)) * Mat4.from_scale(Vec3(ewi_inside_ratio, 1, ewi_inside_ratio)))
+        floor1.set_transform(Mat4.identity())
         floor1.set_visible(True)
 
         last_anchor = floor1
 
-        for i in range(10):
+        floor1 = app.add_mesh(EWIRooftop(max_width, max_width), parent=last_anchor)
+        floor1.set_transform(Mat4.from_translation(Vec3((-1 + ewi_inside_ratio * 2) * max_width / 2, 0, 0))*Mat4.from_scale(Vec3(ewi_inside_ratio, 1, 1)))
+        floor1.set_visible(True)
+
+        last_anchor = floor1
+
+        for i in range(ewi_inside_roofs):
             w1 = app.add_mesh(EWITopInside(), parent=last_anchor)
             w1.set_transform(Mat4.from_translation(Vec3(0, ewi_inside_height / 2, max_width / 2)) * Mat4.from_scale(Vec3(max_width, ewi_inside_height, 1)))
             w1.set_visible(True)
 
             w2 = app.add_mesh(EWITopInside(), parent=last_anchor)
-            w2.set_transform(Mat4.from_translation(Vec3(max_width / 2, ewi_inside_height / 2, 0)) * Mat4.from_rotation_y(90, True) * Mat4.from_scale(Vec3(max_width, ewi_inside_height, 1)))
+            w2.set_transform(Mat4.from_translation(Vec3(max_width / 2, ewi_inside_height / 2, 0)) * Mat4.from_rotation_y(90, True) * Mat4.from_scale(Vec3(max_width* 1/ewi_inside_ratio, ewi_inside_height, 1)))
             w2.set_visible(True)
 
             w3 = app.add_mesh(EWITopInside(), parent=last_anchor)
@@ -558,7 +561,7 @@ class EWI:
             w3.set_visible(True)
 
             w4 = app.add_mesh(EWITopInside(), parent=last_anchor)
-            w4.set_transform(Mat4.from_translation(Vec3(-max_width / 2, ewi_inside_height / 2, 0)) * Mat4.from_rotation_y(-90, True) * Mat4.from_scale(Vec3(max_width, ewi_inside_height, 1)))
+            w4.set_transform(Mat4.from_translation(Vec3(-max_width / 2, ewi_inside_height / 2, 0)) * Mat4.from_rotation_y(-90, True) * Mat4.from_scale(Vec3(max_width* 1/ewi_inside_ratio, ewi_inside_height, 1)))
             w4.set_visible(True)
 
             floor2 = app.add_mesh(EWIRooftop(max_width, max_width), parent=last_anchor)
@@ -568,11 +571,11 @@ class EWI:
             last_anchor = floor2
         
         floor1 = app.add_mesh(EWIRooftop(max_width, max_width), parent=last_anchor)
-        floor1.set_transform(Mat4.from_scale(Vec3(1 / ewi_inside_ratio, 1, 1 / ewi_inside_ratio)))
+        floor1.set_transform(Mat4.from_scale(Vec3(1/ewi_inside_ratio, 1, 1)) * Mat4.from_translation(Vec3((1 - ewi_inside_ratio * 2) * max_width / 2, 0, 0)))
         floor1.set_visible(True)
         last_anchor = floor1
 
-        for i in range(10):
+        for i in range(ewi_outside_roofs):
             w1 = app.add_mesh(EWITopOutside(), parent=last_anchor)
             w1.set_transform(Mat4.from_translation(Vec3(0, ewi_outside_height / 2, max_width / 2)) * Mat4.from_scale(Vec3(max_width, ewi_outside_height, 1)))
             w1.set_visible(True)
