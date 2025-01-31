@@ -256,6 +256,25 @@ class SkyscraperFloorRight(bk.Mesh):
         self.materials = [m]
 
 
+class SkyscraperRoof(bk.Mesh):
+    def __new__(cls, *args, **kwargs):
+        return super().__new__(cls)
+
+    def __init__(self, w=1, h=1, m=material_skyscraper_door):
+        super().__init__()
+        self.w = w
+        self.h = h
+        self.name = "SkyscraperDoorMesh"
+        self.positions = [
+            [-w / 2, -h / 2, 0],
+            [w / 2, -h / 2, 0],
+            [w / 2, h / 2, 0],
+            [-w / 2, h / 2, 0],
+        ]
+        self.texcoords = [[0, 0], [1, 0], [1, 1], [0, 1]]
+        self.triangles = [[0, 1, 2], [0, 2, 3]]
+        self.materials = [m]
+
 
 
 class BasicWall(bk.Mesh):

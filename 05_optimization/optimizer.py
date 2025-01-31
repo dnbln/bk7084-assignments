@@ -23,85 +23,6 @@ class Optimizer:
             5. No two skyscrapers or high rises can be next to each other (1 plot in between diagonally, horizontally and vertically).
             6. Distance from houses to houses should be as small as possible.
 
-            Neighborhood and Zoning Rules
-                Mixed Zoning Bonus:
-
-                    Reward layouts where neighborhoods have a balanced mix of building types (e.g., houses, offices, parks, and flexible plots).
-                    Penalize over-concentration of any one building type within a defined radius (e.g., 5x5 grid).
-            
-                Cultural or Commercial Centers:
-
-                    Bonus for clustering offices and skyscrapers together in designated areas (e.g., a "business district") while keeping houses and parks further away.
-                
-                Low-Density Buffer Zones:
-
-                    Score higher if low-density buildings (houses and parks) are used as buffers around high-density buildings (skyscrapers and high-rises).
-            
-            
-            Traffic and Connectivity Rules
-                Accessibility to Roads:
-
-                    Reward layouts where offices, houses, and skyscrapers are near major roads or pathways (assumed to be part of your city grid).
-                Commute Optimization:
-
-                    Penalize houses that are too far from offices or are "isolated" (e.g., not within a certain radius of any other houses).
-                Walkability:
-
-                    Score higher for designs where residents can access parks and offices within a walkable distance (e.g., 1-2 plots).
-            
-            
-            Environmental and Aesthetic Rules
-                Green Space Integration:
-
-                    Parks surrounded by high-rises or skyscrapers receive penalties unless adequately spaced.
-                    Score higher for "central park" designs where parks are surrounded by houses or mixed-use buildings.
-                Natural Light Cascading:
-
-            Assign bonuses for configurations where sunlight "cascades" down building heights, with shorter buildings in the shadow of taller ones.
-            View Optimization:
-
-            Score higher for houses that have an unobstructed view of parks or open spaces.
-            Resource Distribution Rules
-            Equitable Distribution:
-
-            Ensure each quadrant of the grid has proportional amounts of parks, offices, and flexible plots.
-            Penalize layouts that overly favor one region (e.g., all skyscrapers in one corner).
-            Proximity to Amenities:
-
-            Additional scoring for houses near two or more amenities (e.g., park + office or park + high-rise).
-            Advanced Sunlight and Shadow Rules
-            Seasonal Sunlight Scoring:
-
-            Adjust sunlight scoring to account for different angles throughout the year. Favor houses and parks that receive consistent sunlight across all seasons.
-            Shadow Management:
-
-            Assign penalties for skyscrapers and high-rises that cast large shadows on other tall buildings (e.g., a high-rise shadowing another high-rise).
-            Economic and Social Rules
-            Economic Hubs:
-
-            Score higher if offices and skyscrapers are closer to each other, promoting commercial hubs.
-            Social Interaction Zones:
-
-            Parks near clusters of houses receive bonuses for fostering community interaction.
-            Dynamic Interaction Rules
-            Sunlight-Driven Placement:
-
-            Favor placement of skyscrapers on the north side of parks and houses, leaving the south side open to maximize sunlight.
-            Noise Pollution:
-
-            Penalize layouts where noisy buildings (e.g., offices, high-rises, skyscrapers) are directly adjacent to houses.
-            Bonus Criteria
-            Aesthetic Cohesion:
-
-            Reward clusters of buildings with a visually pleasing arrangement, such as alternating patterns or symmetry.
-            Energy Efficiency:
-
-            Score higher for compact layouts that minimize commuting distances and encourage shared utilities.
-            Cultural Significance:
-
-            Create designated areas for cultural landmarks (e.g., special flexible plots near parks or houses).
-
-
         Args:
             print_info (bool):
                 Whether to print information about the optimization step.
@@ -319,7 +240,6 @@ class Optimizer:
 
 
 
-        # TODO: Implement your optimization algorithm here.
         #  Hint: You can use the following code to swap two buildings:
         previous_score = score(self._city, lambda _: True)
 
@@ -373,5 +293,4 @@ class Optimizer:
                     break
             else:
                 denied_swap_count = 0
-            # TODO: Add a stopping criterion here.
         print(f"\nDone! Final score: {score}")
