@@ -2,7 +2,7 @@ from enum import Enum
 
 import numpy as np
 
-from buildings import Office, Highrise, MySkyscraper, MySkyscraperDubai, EWI, House, Park
+from buildings import Office, Highrise, MySkyscraper, MySkyscraperDubai, EWI, House, Park, HighriseTaipei
 from components import material_basic_ground
 from random import randint
 from bk7084.math import Mat4, Vec3
@@ -38,7 +38,7 @@ class BuildingType(Enum):
 
 Office.type = BuildingType.OFFICE
 EWI.type = BuildingType.OFFICE
-Highrise.type = BuildingType.HIGHRISE
+HighriseTaipei.type = BuildingType.HIGHRISE
 MySkyscraper.type = BuildingType.SKYSCRAPER
 MySkyscraperDubai.type = BuildingType.SKYSCRAPER
 House.type = BuildingType.HOUSE
@@ -274,16 +274,25 @@ class City:
             building = Office(self._app, num_floors, 3)
         elif building_type is BuildingType.HIGHRISE:
             # TODO: replace the following line with your own code to create a highrise
-            building = Highrise(
-                self._app, 5, 3
+            building = HighriseTaipei(
+                self._app, 7, 3
             )
         elif building_type is BuildingType.SKYSCRAPER:
             # TODO: replace the following line with your own code to create a skyscraper
-            skyscraper = randint(0,2)
+            skyscraper = randint(0,6)
             if skyscraper == 0:
-                building = MySkyscraper(self._app, 15, 3)
+                building = MySkyscraper(self._app, 9, 3)
             elif skyscraper == 1:
-                building = MySkyscraperDubai(self._app, 46, 6)
+                building = MySkyscraper(self._app, 10, 3)                
+            elif skyscraper == 2:
+                building = MySkyscraper(self._app, 11, 3)
+            elif skyscraper == 3:
+                building = MySkyscraperDubai(self._app, 35, 6)                
+            elif skyscraper == 4:
+                building = MySkyscraperDubai(self._app, 40, 6)
+            elif skyscraper == 5:
+                building = MySkyscraperDubai(self._app, 46, 6)                
+                
 
         elif building_type is BuildingType.PARK:
             building = Park(self._app)
