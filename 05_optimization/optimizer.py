@@ -330,7 +330,7 @@ class Optimizer:
         if new_score < previous_score:
             if print_info:
                 print("Reverting swap")
-            self._city.swap_buildings(row1, col1, row2, col2)
+            self._city.revert_swap(row1, col1, row2, col2)
             accepted_swap = False
 
         if print_info:

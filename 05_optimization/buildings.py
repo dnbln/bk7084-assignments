@@ -164,16 +164,17 @@ class MySkyscraperDubai:
                 floor2.set_transform(Mat4.from_translation(Vec3(0, max_width, 0)))
                 floor2.set_visible(True)
                 translation_transform = translation_transform * Mat4.from_translation(Vec3(0, max_width, 0))
-                wall1 = app.add_mesh(SkyscraperDoor(max_width, max_width), parent=floor1)
+                # SkyscraperDoor
+                wall1 = app.add_mesh(GlassWindowEnterance(max_width, max_width), parent=floor1)
                 wall1.set_transform(Mat4.from_translation(Vec3(0, max_width / 2, max_width / 2)))
                 wall1.set_visible(True)
-                wall2 = app.add_mesh(SkyscraperDoor(max_width, max_width), parent=floor1)
+                wall2 = app.add_mesh(GlassWindowEnterance(max_width, max_width), parent=floor1)
                 wall2.set_transform(Mat4.from_translation(Vec3(max_width / 2, max_width / 2, 0)) * Mat4.from_rotation_y(90, True))
                 wall2.set_visible(True)
-                wall3 = app.add_mesh(SkyscraperDoor(max_width, max_width), parent=floor1)
+                wall3 = app.add_mesh(GlassWindowEnterance(max_width, max_width), parent=floor1)
                 wall3.set_transform(Mat4.from_translation(Vec3(0, max_width / 2, -max_width / 2)) * Mat4.from_rotation_y(180, True))
                 wall3.set_visible(True)
-                wall4 = app.add_mesh(SkyscraperDoor(max_width, max_width), parent=floor1)
+                wall4 = app.add_mesh(GlassWindowEnterance(max_width, max_width), parent=floor1)
                 wall4.set_transform(Mat4.from_translation(Vec3(-max_width / 2, max_width / 2, 0)) * Mat4.from_rotation_y(-90, True))
                 wall4.set_visible(True)  
             else:
@@ -541,7 +542,7 @@ class EWI:
         max_width (float):
             The maximum width for each component.
     """
-    def __init__(self, app: bk.App, num_floors, max_width, hexcount = 20, pdc = 10, ewi_inside_ratio = 0.4, ewi_inside_height_coef = 0.1, ewi_outside_height_coef = 0.2, ewi_inside_roofs = 2, ewi_outside_roofs = 3):
+    def __init__(self, app: bk.App, num_floors, max_width, hexcount = 5, pdc = 10, ewi_inside_ratio = 0.4, ewi_inside_height_coef = 0.1, ewi_outside_height_coef = 0.2, ewi_inside_roofs = 2, ewi_outside_roofs = 3):
         if num_floors % 2 == 0:
             raise ValueError("Number of floors must be odd")
 
