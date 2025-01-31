@@ -269,17 +269,14 @@ class City:
         if building_type is BuildingType.HOUSE:
             building = House(self._app)
         elif building_type is BuildingType.OFFICE:
-            # TODO: replace the following line with your own code to create an office
-            num_floors = randint(3, 8)
-            building = Office(self._app, num_floors, 3)
+            num_floors = 2 * randint(3, 8) + 1 # need odd number of floors
+            building = EWI(self._app, num_floors, 3)
         elif building_type is BuildingType.HIGHRISE:
-            # TODO: replace the following line with your own code to create a highrise
             building = HighriseTaipei(
                 self._app, 7, 3
             )
         elif building_type is BuildingType.SKYSCRAPER:
-            # TODO: replace the following line with your own code to create a skyscraper
-            skyscraper = randint(0,6)
+            skyscraper = randint(0,5)
             if skyscraper == 0:
                 building = MySkyscraper(self._app, 9, 3)
             elif skyscraper == 1:

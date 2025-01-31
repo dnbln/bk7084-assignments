@@ -63,7 +63,7 @@ material_highrise_floor.diffuse = bk.Color(0.6, 0.6, 0.6)
 
 material_glass_facade = bk.Material()
 material_glass_facade.textures = {
-    "diffuse_texture": bk.res_path("../assets/glassfacade.jpeg"),
+    "diffuse_texture": bk.res_path("assets/glassfacade.jpeg"),
 }
 
 material_skyscraper_wall = bk.Material()
