@@ -108,10 +108,28 @@ class City:
         self._plots = [None] * plots_per_col * plots_per_row
         self._ground = self.create_ground(app, self.width, self.height, *self.spacing)
         self._grid = self.create_grid(app, self.width, self.height, *self.spacing)
+        self._sunlight_cache = None
+        self._old_sunlight_cache = None
         app.update_shadow_map_ortho_proj(max(plots_per_col, plots_per_row) * plot_width)
         # Reset (initialize) the city grid by assigning building to each plot
         print("resetting grid")
-        self.reset_grid()
+        # self.reset_grid()
+    
+    def initialize_from(self, s: str):
+        for line, l in enumerate(s.splitlines()):
+            for col, c in enumerate(l.split(" ")):
+                if c == "HS":
+                    self.construct_building(line, col, BuildingType.HOUSE)
+                elif c == "OF":
+                    self.construct_building(line, col, BuildingType.OFFICE)
+                elif c == "HR":
+                    self.construct_building(line, col, BuildingType.HIGHRISE)
+                elif c == "SK":
+                    self.construct_building(line, col, BuildingType.SKYSCRAPER)
+                elif c == "PK":
+                    self.construct_building(line, col, BuildingType.PARK)
+                else:
+                    self.construct_building(line, col, BuildingType.EMPTY)
 
     @staticmethod
     def create_ground(app, width, height, spacing_x, spacing_y):
@@ -189,7 +207,6 @@ class City:
         remaining_houses = int(total_plots * 0.37)
         remaining_parks = int(total_plots * 0.15)
 
-        # TODO: Randomize the city grid in a smart way.
         for row in range(0, self._plots_per_row, 2):
             prev_high = False
             for col in range(self._plots_per_col):
@@ -213,6 +230,7 @@ class City:
                     self.construct_building(row, col, BuildingType.OFFICE)
                     remaining_offices -= 1
                     prev_high = False
+                    print(f"Office at {row}, {col}")
                 elif remaining_parks > 0:
                     self.construct_building(row, col, BuildingType.PARK)
                     remaining_parks -= 1
@@ -230,6 +248,7 @@ class City:
                 elif remaining_offices > 0:
                     self.construct_building(row, col, BuildingType.OFFICE)
                     remaining_offices -= 1
+                    print(f"Office at {row}, {col}")
                 elif remaining_parks > 0:
                     self.construct_building(row, col, BuildingType.PARK)
                     remaining_parks -= 1
@@ -345,6 +364,27 @@ class City:
         """
         self._plots[row1 * self._plots_per_col + col1], self._plots[row2 * self._plots_per_col + col2] = (
             self._plots[row2 * self._plots_per_col + col2], self._plots[row1 * self._plots_per_col + col1])
+        
+        self._old_sunlight_cache = self._sunlight_cache
+        self._sunlight_cache = None
+    
+    def revert_swap(self, row1: int, col1: int, row2: int, col2: int):
+        """Reverts the swap of the building at the given rows and columns.
+        Args:
+            row1 (int):
+                The row of the first plot.
+            col1 (int):
+                The column of the first plot.
+            row2 (int):
+                The row of the second plot.
+            col2 (int):
+                The column of the second plot.
+        """
+        self._plots[row1 * self._plots_per_col + col1], self._plots[row2 * self._plots_per_col + col2] = (
+            self._plots[row2 * self._plots_per_col + col2], self._plots[row1 * self._plots_per_col + col1])
+        
+        self._sunlight_cache = self._old_sunlight_cache
+        self._old_sunlight_cache = None
 
     def compute_sunlight_scores(self) -> np.array(float):
         """Computes the sunlight scores of the city during the day. Lower scores are
@@ -354,7 +394,10 @@ class City:
                 The sunlight scores of the city at different times of the day, in total
                 11 scores.
         """
-        return np.array(self._app.compute_sunlight_scores()[:11])
+        if self._sunlight_cache is None:
+            self._sunlight_cache = np.array(self._app.compute_sunlight_scores()[:11])
+
+        return self._sunlight_cache
 
     def print_plots(self):
         """Prints the city grid in the console.

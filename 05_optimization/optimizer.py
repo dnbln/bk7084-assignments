@@ -3,6 +3,8 @@ from city import BuildingType, City
 
 from utils import Queue
 
+from typing import Callable
+
 
 
 class Optimizer:
@@ -105,7 +107,7 @@ class Optimizer:
                 Whether to print information about the optimization step.
         """
 
-        def score(city: City):
+        def score(city: City, cs: Callable[[float], bool]):
             # No two skyscrapers or high rises can be next to each other (1 plot in between diagonally, horizontally and vertically).
             for row in range(city.rows):
                 for col in range(city.cols):
@@ -309,7 +311,9 @@ class Optimizer:
 
                         score_value += 1 / ((total_dist / count) + 1)
             
-            score_value += sum(1/x for x in city.compute_sunlight_scores())
+            if cs(score_value):
+                score_value += sum(1/x for x in city.compute_sunlight_scores())
+
             return score_value
 
 
@@ -317,7 +321,7 @@ class Optimizer:
 
         # TODO: Implement your optimization algorithm here.
         #  Hint: You can use the following code to swap two buildings:
-        previous_score = score(self._city)
+        previous_score = score(self._city, lambda _: True)
 
         row1, col1 = randint(0, self._city._plots_per_row - 1), randint(0, self._city._plots_per_col - 1)
         row2, col2 = randint(0, self._city._plots_per_row - 1), randint(0, self._city._plots_per_col - 1)
@@ -325,7 +329,7 @@ class Optimizer:
         accepted_swap = True
         #  Hint: You can use the function `compute_sunlight_scores` of the City class
         #  to compute the sunlight scores
-        new_score = score(self._city)
+        new_score = score(self._city, lambda x: x > previous_score - 20)
 
         if new_score < previous_score:
             if print_info:
