@@ -256,7 +256,7 @@ class SkyscraperFloorRight(bk.Mesh):
         self.materials = [m]
 
 
-class SkyscraperRoof(bk.Mesh):
+class SkyscraperDoor(bk.Mesh):
     def __new__(cls, *args, **kwargs):
         return super().__new__(cls)
 
@@ -274,7 +274,6 @@ class SkyscraperRoof(bk.Mesh):
         self.texcoords = [[0, 0], [1, 0], [1, 1], [0, 1]]
         self.triangles = [[0, 1, 2], [0, 2, 3]]
         self.materials = [m]
-
 
 
 class BasicWall(bk.Mesh):
